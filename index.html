@@ -61,7 +61,7 @@
         }
 
         const data = await response.json();
-        resultDiv.textContent = `Predicted class: ${data.predicted_class}`;
+        resultDiv.textContent = `Predicted class: ${data.predictions[0]}`;
       } catch (error) {
         resultDiv.textContent = 'Error: ' + error.message;
       }
