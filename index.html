@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Image Classifier</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+      max-width: 600px;
+      margin: auto;
+    }
+    h1 {
+      text-align: center;
+    }
+    #result {
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Upload Image for Classification</h1>
+
+  <input type="file" id="imageInput" accept="image/*" />
+  <button id="uploadBtn">Upload and Classify</button>
+
+  <div id="result"></div>
+
+  <script>
+    const uploadBtn = document.getElementById('uploadBtn');
+    const imageInput = document.getElementById('imageInput');
+    const resultDiv = document.getElementById('result');
+
+    // Change this URL to your deployed backend endpoint
+    const backendUrl = "https://your-backend-domain.com/classify/";
+
+    uploadBtn.addEventListener('click', async () => {
+      const file = imageInput.files[0];
+      if (!file) {
+        resultDiv.textContent = 'Please select an image first.';
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('file', file);
+
+      resultDiv.textContent = 'Classifying...';
+
+      try {
+        const response = await fetch(backendUrl, {
+          method: 'POST',
+          body: formData
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          resultDiv.textContent = `Error: ${errorData.error || response.statusText}`;
+          return;
+        }
+
+        const data = await response.json();
+        resultDiv.textContent = `Predicted class: ${data.predicted_class}`;
+      } catch (error) {
+        resultDiv.textContent = 'Error: ' + error.message;
+      }
+    });
+  </script>
+</body>
+</html>
