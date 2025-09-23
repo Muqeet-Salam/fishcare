@@ -18,6 +18,13 @@
       margin-top: 1rem;
       font-weight: bold;
     }
+    .prediction {
+      margin-bottom: 10px;
+    }
+    .confidence {
+      color: green;
+      font-weight: normal;
+    }
   </style>
 </head>
 <body>
@@ -61,7 +68,22 @@
         }
 
         const data = await response.json();
-        resultDiv.textContent = `Predicted class: ${data.predictions[0]}`;
+
+        // Clear previous results
+        resultDiv.innerHTML = '';
+
+        // Loop through predictions and display them with confidence scores
+        data.predictions.forEach((prediction, index) => {
+          const confidence = data.confidence_scores[index];
+          const predictionElement = document.createElement('div');
+          predictionElement.classList.add('prediction');
+          predictionElement.innerHTML = `
+            <strong>${prediction}</strong>
+            <span class="confidence">(${(confidence * 100).toFixed(2)}% confidence)</span>
+          `;
+          resultDiv.appendChild(predictionElement);
+        });
+
       } catch (error) {
         resultDiv.textContent = 'Error: ' + error.message;
       }
